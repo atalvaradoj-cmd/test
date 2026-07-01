@@ -1,126 +1,152 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Para Ti ❤️</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Para vos ❤️</title>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
-
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
 body{
-background:linear-gradient(135deg,#ff758c,#ff7eb3);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-color:white;
-text-align:center;
-overflow:hidden;
+  min-height:100vh;
+  overflow:hidden;
+  color:white;
+  background:radial-gradient(circle at top,#3b0a45,#130018 55%,#050006);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
-
+.stars,.hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.star{
+  position:absolute;width:3px;height:3px;background:white;border-radius:50%;
+  animation:blink 2s infinite alternate;
+}
+.heart{
+  position:absolute;font-size:22px;animation:float 7s linear infinite;opacity:.75;
+}
 .card{
-background:rgba(255,255,255,.15);
-backdrop-filter:blur(10px);
-padding:40px;
-border-radius:20px;
-max-width:500px;
-box-shadow:0 10px 30px rgba(0,0,0,.25);
-animation:fade 1s ease;
+  width:min(92%,520px);
+  padding:34px 24px;
+  border-radius:28px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.18);
+  animation:show .8s ease;
 }
-
-h1{
-font-size:42px;
-margin-bottom:20px;
-}
-
-p{
-font-size:20px;
-margin-bottom:30px;
-line-height:1.6;
-}
-
+h1{font-size:36px;margin-bottom:18px}
+p{font-size:19px;line-height:1.6;margin-bottom:22px}
 button{
-padding:15px 35px;
-border:none;
-border-radius:40px;
-background:white;
-color:#ff4d6d;
-font-size:18px;
-cursor:pointer;
-transition:.3s;
+  border:0;border-radius:999px;padding:15px 26px;
+  background:white;color:#c2185b;font-weight:bold;font-size:17px;
+  cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.25);
 }
-
-button:hover{
-transform:scale(1.05);
-}
-
-#respuesta{
-display:none;
-margin-top:25px;
-font-size:28px;
-animation:fade 1s ease;
-}
-
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
+button:hover{transform:scale(1.05)}
+.hidden{display:none}
+.big{font-size:42px;margin:18px 0}
+.buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.small{font-size:15px;opacity:.85;margin-top:18px}
+@keyframes show{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{from{opacity:.2}to{opacity:1}}
+@keyframes float{from{transform:translateY(110vh) rotate(0deg)}to{transform:translateY(-20vh) rotate(360deg)}}
 </style>
-
 </head>
+
 <body>
 
-<div class="card">
+<div class="stars" id="stars"></div>
+<div class="hearts" id="hearts"></div>
 
-<h1>Hola ❤️</h1>
-
-<p>
-Hay algo que quiero preguntarte...
-</p>
-
-<button onclick="mostrar()">
-Haz clic aquí
-</button>
-
-<div id="respuesta">
-
-<p>
-Desde que llegaste a mi vida todo ha sido mucho más bonito.
-</p>
-
-<h2>
-¿Quieres ser mi novia? 💖
-</h2>
-
-</div>
-
+<div class="card" id="card">
+  <h1 id="title">Tengo algo que decirte...</h1>
+  <p id="text">No sabía cómo hacerlo, así que hice esta página para vos. ❤️</p>
+  <button onclick="next()">✨ Comenzar</button>
 </div>
 
 <script>
+const steps = [
+  {
+    title:"Hola, hermosa ❤️",
+    text:"Desde que llegaste a mi vida, muchas cosas empezaron a sentirse más bonitas."
+  },
+  {
+    title:"No es una página cualquiera...",
+    text:"Es una forma pequeña de decirte que me importás muchísimo."
+  },
+  {
+    title:"Cada momento contigo cuenta ✨",
+    text:"Tus risas, tus mensajes, tus detalles y tu forma de ser hacen mis días mejores."
+  },
+  {
+    title:"Y por eso hoy...",
+    text:"Quiero preguntarte algo que me nace del corazón."
+  },
+  {
+    final:true
+  }
+];
 
-function mostrar(){
+let index = 0;
 
-document.querySelector("button").style.display="none";
+function next(){
+  const card = document.getElementById("card");
 
-document.getElementById("respuesta").style.display="block";
+  if(index < steps.length - 1){
+    card.style.animation = "none";
+    void card.offsetWidth;
+    card.style.animation = "show .8s ease";
 
+    document.getElementById("title").textContent = steps[index].title;
+    document.getElementById("text").textContent = steps[index].text;
+    document.querySelector("button").textContent = index === steps.length - 2 ? "❤️ Ver pregunta" : "Continuar";
+    index++;
+  } else {
+    card.innerHTML = `
+      <h1 class="big">¿Querés ser mi novia? 💖</h1>
+      <p>Prometo hacerte sonreír, cuidarte y darte mi mejor versión cada día.</p>
+      <div class="buttons">
+        <button onclick="yes()">Sí ❤️</button>
+        <button onclick="yes()">Obvio que sí 🥹</button>
+      </div>
+    `;
+  }
 }
 
+function yes(){
+  document.getElementById("card").innerHTML = `
+    <h1 class="big">Sabía que dirías que sí ❤️</h1>
+    <p>Gracias por hacerme tan feliz. Este es solo el inicio de algo muy bonito. ✨</p>
+    <p class="small">Ahora mandame un mensaje, porque estoy sonriendo como idiota JAJA.</p>
+  `;
+  for(let i=0;i<40;i++) createHeart(true);
+}
+
+function createStars(){
+  const stars = document.getElementById("stars");
+  for(let i=0;i<90;i++){
+    const s = document.createElement("div");
+    s.className = "star";
+    s.style.left = Math.random()*100 + "vw";
+    s.style.top = Math.random()*100 + "vh";
+    s.style.animationDelay = Math.random()*2 + "s";
+    stars.appendChild(s);
+  }
+}
+
+function createHeart(extra=false){
+  const hearts = document.getElementById("hearts");
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = ["❤️","💖","💕","✨"][Math.floor(Math.random()*4)];
+  h.style.left = Math.random()*100 + "vw";
+  h.style.animationDuration = (extra ? 3 : 6 + Math.random()*5) + "s";
+  hearts.appendChild(h);
+  setTimeout(()=>h.remove(),9000);
+}
+
+createStars();
+setInterval(()=>createHeart(),700);
 </script>
 
 </body>
